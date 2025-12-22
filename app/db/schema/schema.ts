@@ -1,4 +1,4 @@
-import { boolean, integer, pgEnum, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { boolean, index, integer, pgEnum, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
 
 export const tableSessionStatusEnum = pgEnum("table_session_status", [
     "open",
@@ -23,7 +23,9 @@ export const cafeTable = pgTable("cafe_table", {
     tableName: varchar("table_name").notNull(),
     capacity: integer("capacity").notNull(),
     createdAt: timestamp("created_at").notNull().defaultNow(),
-});
+}, (table) => ({
+    tableNameIdx: index("cafe_table_name_idx").on(table.tableName),
+}));
 
 
 export const dish = pgTable("dish", {
@@ -50,9 +52,6 @@ export const tableSession = pgTable("table_session", {
     totalAmount: integer("total_amount").default(0),
     createdAt: timestamp("created_at").defaultNow(),
 });
-
-
-
 
 export const orderItem = pgTable("order_item", {
     id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
