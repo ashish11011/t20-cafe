@@ -1,4 +1,4 @@
-import { getCurrentTableSession, getTableInfoById, getTodayTableSessions, startTable } from "@/lib/helper.table";
+import { getCurrentTableSession, getTableInfoById, getTodayTableSessions } from "@/lib/helper.table";
 import TableStart from "./tableStart";
 import TableOpen from "./tableOpen";
 import Link from "next/link";
@@ -7,10 +7,18 @@ import TodayTableSession from "@/components/todayTableSession";
 const page = async ({ params }: any) => {
     const paramsData = await params;
     const tableId = paramsData.tableId;
-    const tableSessionOfTheDay = await getTodayTableSessions(tableId);
 
-    const [tableInfo] = await getTableInfoById(tableId);
-    const [currentTableSession] = await getCurrentTableSession(tableId);
+    const [
+        tableSessionOfTheDay,
+        [tableInfo],
+        [currentTableSession]
+    ] = await Promise.all([
+        getTodayTableSessions(tableId),
+        getTableInfoById(tableId),
+        getCurrentTableSession(tableId),
+    ]);
+
+
     return (
         <div className=" p-4">
 
@@ -19,7 +27,7 @@ const page = async ({ params }: any) => {
                 <TodayTableSession tableSessionOfTheDay={tableSessionOfTheDay} />
             </div>
             {
-                currentTableSession === undefined ? <TableStart tableId={tableId} /> : <TableOpen tableSessionId={currentTableSession.id} />
+                currentTableSession === undefined ? <TableStart tableId={tableId} /> : <TableOpen tableSessionId={currentTableSession?.id} />
             }
 
         </div>

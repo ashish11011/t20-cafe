@@ -24,7 +24,7 @@ export default TableOpen;
 
 async function OrderDetails({ tableSessionId }: { tableSessionId: number, }) {
 
-    const orderList = await getOrdersBySessionId(tableSessionId);
+    const orderList = tableSessionId ? await getOrdersBySessionId(tableSessionId) : [];
     let orderTotal = 0;
     for (let i = 0; i < orderList.length; i++) {
         orderTotal += orderList[i].priceAtOrder * orderList[i].quantity;
